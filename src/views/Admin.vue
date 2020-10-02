@@ -1,6 +1,5 @@
 <template>
-  <div id="admin">
-    <h1>Kine Training</h1>
+  <div id="admin" class="container mx-auto px-4 h-full">
     <form @submit.prevent="addSymtom" class="mb-3">
       <div>
         <label for="symptom-name">Ajouter une dysfonction</label>

@@ -1,9 +1,17 @@
 <template>
-  <div id="app" class="container mx-auto px-4">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link :to="{name: 'Admin'}">Ajouter des données</router-link>
+  <div id="app" class="flex flex-col h-screen">
+    <div class="flex-1 relative overflow-hidden">
+      <transition name="fade">
+        <router-view/>
+      </transition>
     </div>
-    <router-view/>
+    <Navbar/>
   </div>
 </template>
+<script>
+import Navbar from '@/components/Navbar.vue';
+
+export default {
+  components: { Navbar },
+};
+</script>

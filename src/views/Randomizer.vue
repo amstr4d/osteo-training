@@ -1,17 +1,31 @@
 <template>
-  <div id="randomizer">
-    <div v-if="this.current">
-      <p>{{this.current.symptom}}</p>
-      <button @click="toggleSolution">Voir la solution</button>
-      <p v-if="showSolution">{{this.current.test}}</p>
+  <div id="randomizer" class="container mx-auto px-4 h-full overflow-y-scroll">
+    <div class="h-full flex flex-col">
+      <div class="flex flex-col flex-1 items-center py-4">
+        <div class="loader" :class="{'open': loading}"></div>
+        <div v-if="this.current" class="flex flex-col content-center justify-center h-full text-center overflow-scroll">
+          <p class="text-3xl">{{ this.current.symptom }}</p>
+          <button @click="toggleSolution" class="my-10">Voir la solution</button>
+          <p v-show="showSolution" class="text-2xl">{{ this.current.test }}</p>
+        </div>
+        <div v-else class="flex flex-col content-center justify-center h-full text-center text-xl">
+          <p>A vous de répondre à chacune des questions, tirées aléatoirement.</p><br>
+          <p>Vous pouvez voir la solution pour chaque question.</p><br>
+          <p>Une fois toutes les questions répondues, vous pouvez recommencer dans un ordre différent.</p><br>
+          <p>Cliquez pour commencer !</p>
+        </div>
+      </div>
+      <div class="mb-4 w-full flex">
+        <button v-show="!showFinish" @click.prevent="getRandomSentence"
+                class="w-full">
+          Nouvelle question
+        </button>
+        <div v-show="showFinish" class="w-full text-center">
+          <p class="mb-2">Terminé !</p>
+          <button @click.prevent="reset" class="w-full">Recommencer ?</button>
+        </div>
+      </div>
     </div>
-
-    <div v-if="showFinish">
-      <p>Terminé !</p>
-      <button @click.prevent="reset">Recommencer ?</button>
-    </div>
-
-    <button v-if="!showFinish" @click.prevent="getRandomSentence" class="shadow bg-teal-600 hover:bg-teal-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">tirage</button>
   </div>
 </template>
 
@@ -27,17 +41,20 @@ export default {
       current: null,
       showSolution: false,
       showFinish: false,
+      loading: false,
     };
   },
   methods: {
     getRandomSentence() {
-      this.showSolution = false;
-      const random = this.getRandomInt(this.selected.length);
-      this.current = this.selected[random];
-      this.selected.splice(random, 1);
-      if (this.selected.length <= 0) {
-        this.showFinish = true;
-      }
+      this.fakeLoading(() => {
+        this.showSolution = false;
+        const random = this.getRandomInt(this.selected.length);
+        this.current = this.selected[random];
+        this.selected.splice(random, 1);
+        if (this.selected.length <= 0) {
+          this.showFinish = true;
+        }
+      });
     },
     copyToSelected() {
       this.selected = [...this.sentences];
@@ -49,9 +66,11 @@ export default {
       this.showSolution = !this.showSolution;
     },
     reset() {
-      this.showFinish = false;
-      this.copyToSelected();
-      this.getRandomSentence();
+      this.fakeLoading(() => {
+        this.showFinish = false;
+        this.current = null;
+        this.copyToSelected();
+      });
     },
     initSentences() {
       this.showFinish = false;
@@ -68,9 +87,71 @@ export default {
           });
       }
     },
+    fakeLoading(callback) {
+      this.loading = true;
+      setTimeout(() => {
+        if (callback) {
+          callback();
+        }
+        this.loading = false;
+      }, 1000);
+    },
   },
   created() {
     this.initSentences();
   },
 };
 </script>
+
+<style scoped>
+button {
+  @apply shadow bg-teal-600 text-white font-bold py-2 px-4 rounded;
+}
+
+button:hover {
+  @apply bg-teal-500;
+}
+
+button:focus {
+  @apply outline-none;
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.loader:before, .loader:after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 50%;
+  transition: transform .6s cubic-bezier(0.83, 0, 0.17, 1);
+  @apply bg-teal-500;
+  /*background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3Ccircle stroke='%23ffffff' vector-effect='non-scaling-stroke' id='a' fill='none' stroke-width='5' r='315'/%3E%3Cuse id='f' href='%23a' stroke-dasharray='100 100 100 9999'/%3E%3Cuse id='b' href='%23a' stroke-dasharray='250 250 250 250 250 9999'/%3E%3Cuse id='e' href='%23a' stroke-dasharray='1000 500 1000 500 9999'/%3E%3Cuse id='g' href='%23a' stroke-dasharray='1500 9999'/%3E%3Cuse id='h' href='%23a' stroke-dasharray='2000 500 500 9999'/%3E%3Cuse id='j' href='%23a' stroke-dasharray='800 800 800 800 800 9999'/%3E%3Cuse id='k' href='%23a' stroke-dasharray='1200 1200 1200 1200 1200 9999'/%3E%3Cuse id='l' href='%23a' stroke-dasharray='1600 1600 1600 1600 1600 9999'/%3E%3C/defs%3E%3Cg transform='translate(1000 750)' %3E%3Cg transform='rotate(0 0 0)' %3E%3Ccircle fill='%23ffffff' r='10'/%3E%3Cg transform='rotate(0 0 0)'%3E%3Cuse href='%23f' transform='scale(.1) rotate(50 0 0)' /%3E%3Cuse href='%23f' transform='scale(.2) rotate(100 0 0)' /%3E%3Cuse href='%23f' transform='scale(.3) rotate(150 0 0)' /%3E%3C/g%3E%3Cg transform='rotate(0 0 0)'%3E%3Cuse href='%23b' transform='scale(.4) rotate(200 0 0)' /%3E%3Cuse href='%23z' transform='scale(.5) rotate(250 0 0)' /%3E%3C/g%3E%3Cg id='z' transform='rotate(0 0 0)'%3E%3Cg transform='rotate(0 0 0)'%3E%3Cuse href='%23b'/%3E%3Cuse href='%23b' transform='scale(1.2) rotate(90 0 0)' /%3E%3Cuse href='%23b' transform='scale(1.4) rotate(60 0 0)' /%3E%3Cuse href='%23e' transform='scale(1.6) rotate(120 0 0)' /%3E%3Cuse href='%23e' transform='scale(1.8) rotate(30 0 0)' /%3E%3C/g%3E%3C/g%3E%3Cg id='y' transform='rotate(0 0 0)'%3E%3Cg transform='rotate(0 0 0)'%3E%3Cuse href='%23e' transform='scale(1.1) rotate(20 0 0)' /%3E%3Cuse href='%23g' transform='scale(1.3) rotate(-40 0 0)' /%3E%3Cuse href='%23g' transform='scale(1.5) rotate(60 0 0)' /%3E%3Cuse href='%23h' transform='scale(1.7) rotate(-80 0 0)' /%3E%3Cuse href='%23j' transform='scale(1.9) rotate(100 0 0)' /%3E%3C/g%3E%3C/g%3E%3Cg transform='rotate(0 0 0)'%3E%3Cg transform='rotate(0 0 0)'%3E%3Cg transform='rotate(0 0 0)'%3E%3Cuse href='%23h' transform='scale(2) rotate(60 0 0)'/%3E%3Cuse href='%23j' transform='scale(2.1) rotate(120 0 0)'/%3E%3Cuse href='%23j' transform='scale(2.3) rotate(180 0 0)'/%3E%3Cuse href='%23h' transform='scale(2.4) rotate(240 0 0)'/%3E%3Cuse href='%23j' transform='scale(2.5) rotate(300 0 0)'/%3E%3C/g%3E%3Cuse href='%23y' transform='scale(2) rotate(180 0 0)' /%3E%3Cuse href='%23j' transform='scale(2.7)'/%3E%3Cuse href='%23j' transform='scale(2.8) rotate(45 0 0)'/%3E%3Cuse href='%23j' transform='scale(2.9) rotate(90 0 0)'/%3E%3Cuse href='%23k' transform='scale(3.1) rotate(135 0 0)'/%3E%3Cuse href='%23k' transform='scale(3.2) rotate(180 0 0)'/%3E%3C/g%3E%3Cuse href='%23k' transform='scale(3.3) rotate(225 0 0)'/%3E%3Cuse href='%23k' transform='scale(3.5) rotate(270 0 0)'/%3E%3Cuse href='%23k' transform='scale(3.6) rotate(315 0 0)'/%3E%3Cuse href='%23k' transform='scale(3.7)'/%3E%3Cuse href='%23k' transform='scale(3.9) rotate(75 0 0)'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");*/
+  /*background-attachment: fixed;*/
+  /*background-repeat: no-repeat;*/
+  /*background-size: cover;*/
+  /*background-position: center;*/
+}
+.loader:before {
+  transform: translateX(-101%);
+}
+.loader:after {
+  transform: translateX(100%);
+}
+
+.loader.open:before {
+  transform: translateX(0);
+}
+.loader.open:after {
+  transform: translateX(0);
+}
+
+</style>
