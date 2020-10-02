@@ -1,4 +1,4 @@
-# kine-training
+# osteo-training
 
 ## Project setup
 ```
