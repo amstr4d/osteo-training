@@ -4,9 +4,9 @@
       <div class="flex flex-col flex-1 items-center py-4">
         <div class="loader" :class="{'open': loading}"></div>
         <div v-if="this.current" class="flex flex-col content-center justify-center h-full text-center overflow-scroll">
-          <p class="text-3xl">{{ this.current.symptom }}</p>
+          <p class="text-3xl">{{ this.current.question }}</p>
           <button @click="toggleSolution" class="my-10">Voir la solution</button>
-          <p v-show="showSolution" class="text-2xl">{{ this.current.test }}</p>
+          <p v-show="showSolution" class="text-2xl">{{ this.current.answer }}</p>
         </div>
         <div v-else class="flex flex-col content-center justify-center h-full text-center text-xl">
           <p>A vous de répondre à chacune des questions, tirées aléatoirement.</p><br>
