@@ -13,9 +13,7 @@ jobs:
                 uses: actions/setup-node@v1
                 with:
                     node-version: '12'
-            -   name: Cache NPM dependencies
-                id: npm-cache
-                uses: actions/cache@v2
+            -   uses: actions/cache@v2
                 with:
                     path: ~/.npm
                     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -23,7 +21,6 @@ jobs:
                         ${{ runner.os }}-node-
 
             -   name: Install dependencies
-                if: steps.npm-cache.outputs.cache-hit != 'true'
                 run: npm ci
             -   name: Build
                 run: npm run build
