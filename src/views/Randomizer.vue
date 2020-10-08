@@ -3,7 +3,7 @@
     <div class="h-full flex flex-col">
       <div class="flex flex-col flex-1 items-center py-4">
         <div class="loader" :class="{'open': loading}"></div>
-        <div v-if="this.current" class="flex flex-col content-center justify-center h-full text-center overflow-scroll">
+        <div v-if="this.current" class="flex flex-col content-center justify-center h-full text-center">
           <p class="text-3xl">{{ this.current.question }}</p>
           <button @click="toggleSolution" class="my-10">Voir la solution</button>
           <p v-show="showSolution" class="text-2xl">{{ this.current.answer }}</p>
@@ -17,12 +17,12 @@
       </div>
       <div class="mb-4 w-full flex">
         <button v-show="!showFinish" @click.prevent="getRandomSentence"
-                class="w-full">
+                class="w-full" :disabled="loading">
           Nouvelle question
         </button>
         <div v-show="showFinish" class="w-full text-center">
           <p class="mb-2">Terminé !</p>
-          <button @click.prevent="reset" class="w-full">Recommencer ?</button>
+          <button @click.prevent="reset" class="w-full" :disabled="loading">Recommencer ?</button>
         </div>
       </div>
     </div>
@@ -72,7 +72,7 @@ export default {
         this.copyToSelected();
       });
     },
-    initSentences() {
+    initSentences(callback) {
       this.showFinish = false;
       if (this.sentences.length <= 0) {
         firebase.firestore()
@@ -83,7 +83,9 @@ export default {
               datas.push(doc.data());
             });
             this.sentences = datas;
-            this.copyToSelected();
+            if (callback) {
+              callback();
+            }
           });
       }
     },
@@ -98,7 +100,7 @@ export default {
     },
   },
   created() {
-    this.initSentences();
+    this.initSentences(this.copyToSelected);
   },
 };
 </script>
