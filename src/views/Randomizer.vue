@@ -77,7 +77,6 @@ export default {
       if (this.sentences.length <= 0) {
         firebase.firestore()
           .collection('sentences')
-          .enablePersistence()
           .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
             const datas = [];
             querySnapshot.forEach((doc) => {
