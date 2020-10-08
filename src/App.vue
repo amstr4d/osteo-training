@@ -1,9 +1,7 @@
 <template>
   <div id="app" class="flex flex-col h-screen">
-    <div class="flex-1 relative overflow-hidden">
-      <transition name="fade">
-        <router-view/>
-      </transition>
+    <div class="flex-1 relative overflow-x-hidden bg-gray-100">
+      <router-view/>
     </div>
     <Navbar/>
   </div>
