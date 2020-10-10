@@ -26,10 +26,10 @@
     </form>
     <hr class="mb-5">
     <div>
-      <div class="rounded overflow-hidden shadow mb-4 bg-white" v-for="sentenceElem in sentences" :key="sentenceElem.id">
+      <div class="rounded overflow-hidden shadow mb-4 bg-white dark:bg-gray-700" v-for="sentenceElem in sentences" :key="sentenceElem.id">
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2">{{ sentenceElem.question }}</div>
-          <p class="text-gray-700 text-base">
+          <p class="text-gray-700 dark:text-gray-200">
             {{ sentenceElem.answer }}
           </p>
         </div>

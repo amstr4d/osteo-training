@@ -1,5 +1,5 @@
 <template>
-  <div id="randomizer" class="container mx-auto px-4 h-full overflow-y-scroll bg-white">
+  <div id="randomizer" class="container mx-auto px-4 h-full overflow-y-scroll bg-white dark:bg-gray-800">
     <div class="h-full flex flex-col">
       <div class="flex flex-col flex-1 items-center py-4">
         <div class="loader" :class="{'open': loading}"></div>

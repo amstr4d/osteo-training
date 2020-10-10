@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="flex flex-col">
-    <div class="flex-1 relative overflow-x-hidden bg-gray-100">
+    <div class="flex-1 relative overflow-x-hidden bg-gray-100 dark:bg-gray-800 dark:text-white">
       <router-view/>
     </div>
     <Navbar/>
