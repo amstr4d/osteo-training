@@ -54,14 +54,13 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Admin',
   data() {
     return {
       editId: null,
-      sentences: [],
       sentence: {
         question: '',
         answer: '',
@@ -70,23 +69,14 @@ export default {
     };
   },
   methods: {
-    addSentence() {
+    async addSentence() {
       if (this.sentence.question !== '' && this.sentence.answer !== '') {
         if (!this.editId) {
-          firebase.firestore()
-            .collection('sentences')
-            .add(this.sentence)
-            .then(() => {
-              this.resetSentence();
-            });
+          await this.$store.commit('add', this.sentence);
+          this.resetSentence();
         } else {
-          firebase.firestore()
-            .collection('sentences')
-            .doc(this.editId)
-            .update(this.sentence)
-            .then(() => {
-              this.resetSentence();
-            });
+          await this.$store.commit('edit', { id: this.editId, sentence: this.sentence });
+          this.resetSentence();
         }
       }
     },
@@ -102,13 +92,7 @@ export default {
     },
     deleteSentence(id) {
       if (window.confirm('Confirmer la suppression')) {
-        firebase.firestore()
-          .collection('sentences')
-          .doc(id)
-          .delete()
-          .then(() => {
-            this.resetSentence();
-          });
+        this.$store.commit('delete', id);
       }
     },
     resetSentence() {
@@ -126,24 +110,12 @@ export default {
     },
   },
   computed: {
+    ...mapState([
+      'sentences',
+    ]),
     isEditionMode() {
       return this.editId !== null;
     },
-  },
-  created() {
-    firebase.firestore()
-      .collection('sentences')
-      .onSnapshot((querySnapshot) => {
-        const datas = [];
-        querySnapshot.forEach((doc) => {
-          const obj = {
-            id: doc.id,
-            ...doc.data(),
-          };
-          datas.push(obj);
-        });
-        this.sentences = datas;
-      });
   },
 };
 </script>

@@ -30,13 +30,12 @@
 </template>
 
 <script>
-import firebase from 'firebase';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Randomizer',
   data() {
     return {
-      sentences: [],
       selected: [],
       current: null,
       showSolution: false,
@@ -46,21 +45,25 @@ export default {
   },
   methods: {
     getRandomSentence() {
+      if (this.selected.length <= 0) {
+        this.resetSelected();
+      }
       this.fakeLoading(() => {
         this.showSolution = false;
-        const random = this.getRandomInt(this.selected.length);
-        this.current = this.selected[random];
-        this.selected.splice(random, 1);
+        const random = this.selected.splice(this.getRandomInt(), 1)[0];
+        this.current = this.$store.state.sentences[random];
         if (this.selected.length <= 0) {
           this.showFinish = true;
         }
       });
     },
-    copyToSelected() {
-      this.selected = [...this.sentences];
+    resetSelected() {
+      for (let i = 0; i <= this.sentences.length - 1; ++i) {
+        this.selected.push(i);
+      }
     },
-    getRandomInt(max) {
-      return Math.floor(Math.random() * Math.floor(max));
+    getRandomInt() {
+      return Math.floor(Math.random() * this.selected.length);
     },
     toggleSolution() {
       this.showSolution = !this.showSolution;
@@ -69,25 +72,8 @@ export default {
       this.fakeLoading(() => {
         this.showFinish = false;
         this.current = null;
-        this.copyToSelected();
+        this.resetSelected();
       });
-    },
-    initSentences(callback) {
-      this.showFinish = false;
-      if (this.sentences.length <= 0) {
-        firebase.firestore()
-          .collection('sentences')
-          .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
-            const datas = [];
-            querySnapshot.forEach((doc) => {
-              datas.push(doc.data());
-            });
-            this.sentences = datas;
-            if (callback) {
-              callback();
-            }
-          });
-      }
     },
     fakeLoading(callback) {
       this.loading = true;
@@ -99,8 +85,13 @@ export default {
       }, 1000);
     },
   },
-  created() {
-    this.initSentences(this.copyToSelected);
+  computed: {
+    ...mapState([
+      'sentences',
+    ]),
+  },
+  mounted() {
+    this.resetSelected();
   },
 };
 </script>
