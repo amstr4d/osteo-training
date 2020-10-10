@@ -15,7 +15,7 @@ export default new Vuex.Store({
     async add(state, payload) {
       await firebase.firestore()
         .collection('sentences')
-        .add(payload);
+        .add({ ...payload, createdAt: Date.now() });
     },
     async edit(state, payload) {
       await firebase.firestore()
@@ -34,6 +34,7 @@ export default new Vuex.Store({
     init({ commit }) {
       firebase.firestore()
         .collection('sentences')
+        .orderBy('createdAt', 'asc')
         .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
           const datas = [];
           querySnapshot.forEach((doc) => {
