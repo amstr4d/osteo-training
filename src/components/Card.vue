@@ -36,9 +36,7 @@ export default {
         el.scrollIntoView({ behavior: 'smooth' });
       }
 
-      this.$parent.sentence.question = sentence.question;
-      this.$parent.sentence.answer = sentence.answer;
-      this.$parent.editId = sentence.id;
+      this.$store.commit('sentences/setEdit', sentence);
     },
     deleteSentence(id) {
       if (window.confirm('Confirmer la suppression')) {

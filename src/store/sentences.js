@@ -5,6 +5,9 @@ export default {
   namespaced: true,
   state: {
     sentences: [],
+    editSentence: {
+      id: null, question: '', answer: '', createdAt: null,
+    },
   },
   mutations: {
     set(state, sentences) {
@@ -19,13 +22,22 @@ export default {
       await firebase.firestore()
         .collection('sentences')
         .doc(payload.id)
-        .update(payload.sentence);
+        .update(payload);
     },
     delete(state, id) {
       firebase.firestore()
         .collection('sentences')
         .doc(id)
         .delete();
+    },
+    setEdit(state, sentence) {
+      state.editSentence = { ...sentence };
+    },
+    resetEdit(state) {
+      state.editSentence.id = null;
+      state.editSentence.question = '';
+      state.editSentence.answer = '';
+      state.editSentence.createdAt = null;
     },
   },
   actions: {
