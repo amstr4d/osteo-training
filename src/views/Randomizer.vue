@@ -51,7 +51,7 @@ export default {
       this.fakeLoading(() => {
         this.showSolution = false;
         const random = this.selected.splice(this.getRandomInt(), 1)[0];
-        this.current = this.$store.state.sentences[random];
+        this.current = this.sentences[random];
         if (this.selected.length <= 0) {
           this.showFinish = true;
         }
@@ -86,9 +86,9 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'sentences',
-    ]),
+    ...mapState({
+      sentences: (state) => state.sentences.sentences,
+    }),
   },
   mounted() {
     this.resetSelected();

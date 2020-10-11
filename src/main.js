@@ -24,7 +24,7 @@ firebase.initializeApp(firebaseConfig);
 
 firebase.firestore().enablePersistence();
 
-store.dispatch('init');
+store.dispatch('sentences/init');
 
 new Vue({
   router,

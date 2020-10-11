@@ -72,10 +72,10 @@ export default {
     async addSentence() {
       if (this.sentence.question !== '' && this.sentence.answer !== '') {
         if (!this.editId) {
-          await this.$store.commit('add', this.sentence);
+          await this.$store.commit('sentences/add', this.sentence);
           this.resetSentence();
         } else {
-          await this.$store.commit('edit', { id: this.editId, sentence: this.sentence });
+          await this.$store.commit('sentences/edit', { id: this.editId, sentence: this.sentence });
           this.resetSentence();
         }
       }
@@ -92,7 +92,7 @@ export default {
     },
     deleteSentence(id) {
       if (window.confirm('Confirmer la suppression')) {
-        this.$store.commit('delete', id);
+        this.$store.commit('sentences/delete', id);
       }
     },
     resetSentence() {
@@ -110,9 +110,9 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'sentences',
-    ]),
+    ...mapState({
+      sentences: (state) => state.sentences.sentences,
+    }),
     isEditionMode() {
       return this.editId !== null;
     },
