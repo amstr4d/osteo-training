@@ -7,7 +7,7 @@
 
     <div>
       <label for="answer-name">Ajouter une réponse</label>
-      <textarea id="answer-name" v-model="currentSentence.answer" rows="5" placeholder="Réponse" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" required></textarea>
+      <editor-content :editor="editor" class="editor_content" id="answer-name" v-model="currentSentence.answer"/>
     </div>
     <div class="flex justify-between">
       <button type="reset" @click="resetSentence" class="hover:text-teal-600 focus:outline-none">
@@ -27,9 +27,18 @@
 
 <script>
 import { mapState } from 'vuex';
+import { Editor, EditorContent } from 'tiptap';
 
 export default {
   name: 'SentenceForm',
+  components: {
+    EditorContent,
+  },
+  data() {
+    return {
+      editor: null,
+    };
+  },
   methods: {
     async addSentence() {
       if (this.currentSentence.question !== '' && this.currentSentence.answer !== '') {
@@ -43,6 +52,7 @@ export default {
     },
     resetSentence() {
       this.$store.commit('sentences/resetEdit');
+      this.editor.clearContent(true);
     },
   },
   computed: {
@@ -51,6 +61,24 @@ export default {
     }),
     isEditionMode() {
       return this.currentSentence.id !== null;
+    },
+  },
+  mounted() {
+    this.editor = new Editor({
+      content: this.currentSentence.answer,
+      onUpdate: ({ getHTML }) => {
+        this.currentSentence.answer = getHTML();
+      },
+    });
+  },
+  beforeDestroy() {
+    this.editor.destroy();
+  },
+  watch: {
+    currentSentence() {
+      if (this.editor) {
+        this.editor.setContent(this.currentSentence.answer, true);
+      }
     },
   },
 };

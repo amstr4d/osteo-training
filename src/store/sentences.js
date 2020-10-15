@@ -16,13 +16,13 @@ export default {
     async add(state, payload) {
       await firebase.firestore()
         .collection('sentences')
-        .add({ ...payload, createdAt: Date.now() });
+        .add({ question: payload.question, answer: payload.answer, createdAt: Date.now() });
     },
     async edit(state, payload) {
       await firebase.firestore()
         .collection('sentences')
         .doc(payload.id)
-        .update(payload);
+        .update({ question: payload.question, answer: payload.answer });
     },
     delete(state, id) {
       firebase.firestore()

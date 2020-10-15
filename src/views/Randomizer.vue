@@ -6,7 +6,7 @@
         <div v-if="this.current" class="flex flex-col content-center justify-center h-full text-center">
           <p class="text-3xl">{{ this.current.question }}</p>
           <button @click="toggleSolution" class="my-10">Voir la solution</button>
-          <p v-show="showSolution" class="text-2xl">{{ this.current.answer }}</p>
+          <p v-show="showSolution" class="text-2xl" v-html="this.current.answer"></p>
         </div>
         <div v-else class="flex flex-col content-center justify-center h-full text-center text-xl">
           <p>A vous de répondre à chacune des questions, tirées aléatoirement.</p><br>

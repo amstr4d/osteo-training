@@ -2,9 +2,7 @@
   <div class="rounded overflow-hidden shadow mb-4 bg-white dark:bg-gray-700">
     <div class="px-6 py-4">
       <div class="font-bold text-xl mb-2">{{ sentence.question }}</div>
-      <p class="text-gray-700 dark:text-gray-200">
-        {{ sentence.answer }}
-      </p>
+      <p class="text-gray-700 dark:text-gray-200" v-html="sentence.answer"></p>
     </div>
     <div class="px-6 pt-4 pb-2">
       <div class="flex justify-between">
