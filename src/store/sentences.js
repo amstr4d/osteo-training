@@ -44,7 +44,7 @@ export default {
     init({ commit }) {
       firebase.firestore()
         .collection('sentences')
-        .orderBy('createdAt', 'asc')
+        .orderBy('createdAt', 'desc')
         .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
           const datas = [];
           querySnapshot.forEach((doc) => {

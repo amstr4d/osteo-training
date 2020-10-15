@@ -37,8 +37,10 @@ export default {
       this.$store.commit('sentences/setEdit', sentence);
     },
     deleteSentence(id) {
-      if (window.confirm('Confirmer la suppression')) {
-        this.$store.commit('sentences/delete', id);
+      if (id) {
+        if (window.confirm('Confirmer la suppression')) {
+          this.$store.commit('sentences/delete', id);
+        }
       }
     },
   },

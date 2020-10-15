@@ -5,7 +5,7 @@
       <input type="text" id="question-name" v-model="currentSentence.question" placeholder="Question" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" required>
     </div>
 
-    <div>
+    <div class="editor">
       <label for="answer-name">Ajouter une réponse</label>
       <editor-content :editor="editor" class="editor_content" id="answer-name" v-model="currentSentence.answer"/>
     </div>
@@ -28,6 +28,7 @@
 <script>
 import { mapState } from 'vuex';
 import { Editor, EditorContent } from 'tiptap';
+import { HardBreak, Placeholder } from 'tiptap-extensions';
 
 export default {
   name: 'SentenceForm',
@@ -65,6 +66,16 @@ export default {
   },
   mounted() {
     this.editor = new Editor({
+      extensions: [
+        new HardBreak(),
+        new Placeholder({
+          emptyEditorClass: 'is-editor-empty',
+          emptyNodeClass: 'is-empty',
+          emptyNodeText: 'Réponse',
+          showOnlyWhenEditable: true,
+          showOnlyCurrent: true,
+        }),
+      ],
       content: this.currentSentence.answer,
       onUpdate: ({ getHTML }) => {
         this.currentSentence.answer = getHTML();
@@ -84,6 +95,12 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style>
+.editor p.is-editor-empty:first-child::before {
+  content: attr(data-empty-text);
+  float: left;
+  color: #a0aec0;
+  pointer-events: none;
+  height: 0;
+}
 </style>
