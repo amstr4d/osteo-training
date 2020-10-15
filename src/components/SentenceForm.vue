@@ -2,7 +2,7 @@
   <form id="question-form" @submit.prevent="addSentence" class="mb-5 scroll-to-me">
     <div>
       <label for="question-name">Ajouter une question</label>
-      <input type="text" id="question-name" v-model="currentSentence.question" placeholder="Question" class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" required>
+      <input type="text" id="question-name" v-model="currentSentence.question" placeholder="Question" required>
     </div>
 
     <div class="editor">
