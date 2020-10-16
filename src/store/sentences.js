@@ -1,26 +1,19 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { db } from '@/utils/firebase';
 
 export default {
   namespaced: true,
   state: {
     sentences: [],
     editSentence: {
-      id: null, question: '', answer: '', createdAt: null,
+      id: null, question: '', answer: '', createdAt: null, user: null,
     },
   },
   mutations: {
     set(state, sentences) {
       state.sentences = sentences;
     },
-    async edit(state, payload) {
-      await firebase.firestore()
-        .collection('sentences')
-        .doc(payload.id)
-        .update({ question: payload.question, answer: payload.answer });
-    },
     delete(state, id) {
-      firebase.firestore()
+      db
         .collection('sentences')
         .doc(id)
         .delete();
@@ -33,11 +26,12 @@ export default {
       state.editSentence.question = '';
       state.editSentence.answer = '';
       state.editSentence.createdAt = null;
+      state.editSentence.user = null;
     },
   },
   actions: {
     init({ commit }) {
-      firebase.firestore()
+      db
         .collection('sentences')
         .orderBy('createdAt', 'desc')
         .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
@@ -49,10 +43,18 @@ export default {
         });
     },
     async add({ rootState }, payload) {
-      await firebase.firestore()
+      await db
         .collection('sentences')
         .add({
-          question: payload.question, answer: payload.answer, createdAt: Date.now(), userId: rootState.users.user.uid,
+          question: payload.question, answer: payload.answer, createdAt: Date.now(), user: rootState.users.user,
+        });
+    },
+    async edit({ rootState }, payload) {
+      await db
+        .collection('sentences')
+        .doc(payload.id)
+        .update({
+          question: payload.question, answer: payload.answer, createdAt: Date.now(), user: rootState.users.user,
         });
     },
   },

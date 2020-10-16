@@ -14,7 +14,10 @@ export default {
     async login({ commit }) {
       const provider = new firebase.auth.GoogleAuthProvider();
       const res = await auth.signInWithPopup(provider);
-      await commit('setCurrentUser', res.user.toJSON());
+      const userData = res.user.toJSON();
+      await commit('setCurrentUser', {
+        uid: userData.uid, email: userData.email, photoURL: userData.photoURL, displayName: userData.displayName,
+      });
     },
     async logout({ commit }) {
       await auth.signOut();

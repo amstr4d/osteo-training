@@ -46,7 +46,7 @@ export default {
         if (!this.currentSentence.id) {
           await this.$store.dispatch('sentences/add', this.currentSentence);
         } else {
-          await this.$store.commit('sentences/edit', this.currentSentence);
+          await this.$store.dispatch('sentences/edit', this.currentSentence);
         }
         this.resetSentence();
       }
