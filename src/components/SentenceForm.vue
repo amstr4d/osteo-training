@@ -44,7 +44,7 @@ export default {
     async addSentence() {
       if (this.currentSentence.question !== '' && this.currentSentence.answer !== '') {
         if (!this.currentSentence.id) {
-          await this.$store.commit('sentences/add', this.currentSentence);
+          await this.$store.dispatch('sentences/add', this.currentSentence);
         } else {
           await this.$store.commit('sentences/edit', this.currentSentence);
         }

@@ -13,11 +13,6 @@ export default {
     set(state, sentences) {
       state.sentences = sentences;
     },
-    async add(state, payload) {
-      await firebase.firestore()
-        .collection('sentences')
-        .add({ question: payload.question, answer: payload.answer, createdAt: Date.now() });
-    },
     async edit(state, payload) {
       await firebase.firestore()
         .collection('sentences')
@@ -51,6 +46,13 @@ export default {
             datas.push({ id: doc.id, ...doc.data() });
           });
           commit('set', datas);
+        });
+    },
+    async add({ rootState }, payload) {
+      await firebase.firestore()
+        .collection('sentences')
+        .add({
+          question: payload.question, answer: payload.answer, createdAt: Date.now(), userId: rootState.users.user.uid,
         });
     },
   },
